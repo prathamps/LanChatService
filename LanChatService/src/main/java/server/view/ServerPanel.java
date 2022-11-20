@@ -4,6 +4,7 @@
  */
 package server.view;
 
+import intf.MessageInterface;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +20,7 @@ import server.conn.Server;
  *
  * @author INTEL
  */
-public class ServerPanel extends JFrame implements ActionListener {
+public class ServerPanel extends JFrame implements ActionListener, MessageInterface {
     private int width = 800;
     private int height = 600;
     
@@ -93,7 +94,7 @@ public class ServerPanel extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == startServerBtn) {
             try {
-                Server.getInstance().startServer();
+                Server.getInstance().startServer(this);
             } catch (Exception ex) {
                 System.err.println(ex.getMessage());
             }
@@ -105,5 +106,10 @@ public class ServerPanel extends JFrame implements ActionListener {
                 System.err.println(ex.getMessage());
             }
         }
+    }
+    
+        @Override
+    public void onMessageReceived(String message) {
+        outputMessages.append("Client: " + message + "\n");
     }
 }

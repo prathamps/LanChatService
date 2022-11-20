@@ -5,6 +5,7 @@
 package client.view;
 
 import conn.Client;
+import intf.MessageInterface;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +20,7 @@ import javax.swing.JTextField;
  *
  * @author INTEL
  */
-public class ClientPanel extends JFrame implements ActionListener {
+public class ClientPanel extends JFrame implements ActionListener, MessageInterface {
     private int width = 800;
     private int height = 600;
     
@@ -68,7 +69,7 @@ public class ClientPanel extends JFrame implements ActionListener {
         sendMessageBtn.addActionListener(this);
         bottomPanel.add(sendMessageBtn);
         
-        connectServerBtn = new JButton("Start");
+        connectServerBtn = new JButton("Connect");
         connectServerBtn.setBackground(Color.GREEN);
         connectServerBtn.setForeground(Color.WHITE);
         connectServerBtn.setBounds(bottomPanel.getWidth() - 200, 10, 100, 30 );
@@ -93,13 +94,22 @@ public class ClientPanel extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == connectServerBtn) {
             try {
-                Client.getInstance().connectToServer();
+                Client.getInstance().connectToServer(this);
             } catch(Exception ex){
                 System.err.println(ex.getMessage());
             }
         }
         if(e.getSource() == sendMessageBtn) {
-        
+            try {
+                Client.getInstance().sendMessage(inputMessage.getText());
+            } catch(Exception ex){
+                System.err.println(ex.getMessage());
+            }
         }
+    }
+    
+    @Override
+    public void onMessageReceived(String message) {
+        outputMessages.append("Server: " + message + "\n");
     }
 }
